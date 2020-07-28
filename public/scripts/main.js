@@ -15,6 +15,17 @@
  */
 'use strict';
 
+const firebaseConfig = {
+  apiKey: "AIzaSyBsxbbR06BwQl__ch5IfVlnytHPdUKBkXg",
+  authDomain: "snap-2020-30b12.firebaseapp.com",
+  databaseURL: "https://snap-2020-30b12.firebaseio.com",
+  projectId: "snap-2020-30b12",
+  storageBucket: "snap-2020-30b12.appspot.com",
+  messagingSenderId: "303721417534",
+  appId: "1:303721417534:web:4b18332ded4e2f9fd8fa6f",
+  measurementId: "G-GSEWH9Q803"
+};
+
 // Signs-in Friendly Chat.
 function signIn() {
   alert('TODO: Implement Google Sign-In');
