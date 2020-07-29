@@ -29,17 +29,6 @@ var signInButtonElement = document.getElementById('sign-in');
 var signOutButtonElement = document.getElementById('sign-out');
 var signInSnackbarElement = document.getElementById('must-signin-snackbar');
 
-const firebaseConfig = {
-  apiKey: "AIzaSyBsxbbR06BwQl__ch5IfVlnytHPdUKBkXg",
-  authDomain: "snap-2020-30b12.firebaseapp.com",
-  databaseURL: "https://snap-2020-30b12.firebaseio.com",
-  projectId: "snap-2020-30b12",
-  storageBucket: "snap-2020-30b12.appspot.com",
-  messagingSenderId: "303721417534",
-  appId: "1:303721417534:web:4b18332ded4e2f9fd8fa6f",
-  measurementId: "G-GSEWH9Q803"
-};
-
 // Signs-in Friendly Chat.
 function signIn() {
   var provider = new firebase.auth.GoogleAuthProvider();
@@ -53,7 +42,16 @@ function signOut() {
 
 //Initialize firebase.
 function initFirebase(){
-  firebase.initializeApp(firebaseConfig);
+  firebase.initializeApp( {
+    apiKey: "AIzaSyBsxbbR06BwQl__ch5IfVlnytHPdUKBkXg",
+    authDomain: "snap-2020-30b12.firebaseapp.com",
+    databaseURL: "https://snap-2020-30b12.firebaseio.com",
+    projectId: "snap-2020-30b12",
+    storageBucket: "snap-2020-30b12.appspot.com",
+    messagingSenderId: "303721417534",
+    appId: "1:303721417534:web:4b18332ded4e2f9fd8fa6f",
+    measurementId: "G-GSEWH9Q803"
+  });
 }
 // Initiate firebase auth.
 function initFirebaseAuth() {
@@ -77,7 +75,14 @@ function isUserSignedIn() {
 
 // Saves a new message on the Firebase DB.
 function saveMessage(messageText) {
-  // TODO 7: Push a new message to Firebase.
+  return firebase.firestore().collection('messages').add({
+    name: getUserName(),
+    text: messageText,
+    profilePicUrl: getProfilePicUrl(),
+    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+  }).catch(function(error) {
+    console.error('Error writing new message to Firebase Database', error);
+  });
 }
 
 // Loads chat messages history and listens for upcoming ones.
