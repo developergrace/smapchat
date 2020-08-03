@@ -28,6 +28,10 @@ var userNameElement = document.getElementById('user-name');
 var signInButtonElement = document.getElementById('sign-in');
 var signOutButtonElement = document.getElementById('sign-out');
 
+//Color changes 
+const title = document.querySelector('h3');
+
+
 // Signs-in Friendly Chat.
 function signIn() {
   var provider = new firebase.auth.GoogleAuthProvider();

@@ -1,14 +1,22 @@
-# chat_app_starter
+# SmapChat
 
-## Directions
-To run this project, you will need to complete the following workshops (found on Notion):
+## About
+A messaging application requiring a Google login to send text and images. This program has the following features:
 
-1. Project Intro -- HTML (form and header elements in index.html)
-2. DOM Elements (main.js) 
-3. Firebase initialization, config, and local serving (main.js) 
-4. Firebase authentication (main.js)
-5. Firebase hosting and deploying
-6. Firebase Firestore (main.js)
+ User can login using their Google account
+ User can send text messages
+ User can send images
+ Page is mobile-responsive
+
+The following features will be implemented:
+
+ Customizable colors
+ User can edit messages
+
+Languages Used:
+ JavaScript
+ CSS
+ HTML
 
 ## Credits
 This tutorial was adapted from Google Codelab. 
