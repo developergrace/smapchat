@@ -14,15 +14,64 @@
  * limitations under the License.
  */
 
- html, body {
+html, body {
   font-family: 'Roboto', 'Helvetica', sans-serif;
+  margin: 0;
+  padding: 0;
 }
-main {
+body {
+  background-color: teal;
   background-image: url("../images/spectacles.jpg");
   background-repeat: no-repeat;
-  background-position: top center;
-  background-size: 100%;
+  background-position: top;
+  background-size: cover 100%;
+  overflow-x: hidden;
+}
+header {
   width: 100%;
+  position: relative;
+}
+header > * {
+  padding: 10px 30px;
+  margin: 10px;
+}
+header h3 {
+  color: white;
+  font-size: 2.5em;
+  width: 100%;
+}
+#user-container {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+  align-items: center;
+  width: auto;
+  position: relative;
+}
+#user-container #user-pic {
+  top: -3px;
+  position: relative;
+  display: inline-block;
+  background-image: url('/images/profile_placeholder.png');
+  background-repeat: no-repeat;
+  width: 30px;
+  height: 30px;
+  background-size: 30px;
+  border-radius: 20px;
+}
+#user-container #user-name {
+  font-size: 16px;
+  line-height: 36px;
+  padding-right: 10px;
+  padding-left: 20px;
+  color: white;
+}
+#user-container button {
+  background: none;
+  outline: none;
+  border: none;
+  color: white;
+  cursor: pointer !important;
 }
 main, #messages-card {
   height: 100%;
@@ -33,42 +82,18 @@ main, #messages-card {
   padding-bottom: 0;
 }
 #messages-card {
-  margin-top: 15px;
+  position: absolute;
+  top: 150px;
+  left: 35px;
+  bottom: 30px;
+  height: 85%;
+  width: 80%;
+  padding: 5px 15px;
+  margin-bottom: 30px;
   background-color: white;
   background-color: rgba(255,255,255,.9);
-}
-.mdl-layout__header-row span {
-  margin-left: 15px;
-  margin-top: 17px;
-}
-.mdl-grid {
-  max-width: 1024px;
-  margin: auto;
-}
-.material-icons {
-  font-size: 36px;
-  top: 8px;
-  position: relative;
-}
-.mdl-layout__header-row {
-  padding: 0;
-  margin: 0 auto;
-}
-.mdl-card__supporting-text {
-  width: auto;
-  height: 100%;
-  padding-top: 0;
-  padding-bottom: 0;
-}
-#messages {
-  overflow-y: auto;
-  margin-bottom: 10px;
-  height: calc(100% - 80px);
-  display: flex;
-  flex-direction: column;
-}
-#message-filler {
-  flex-grow: 1;
+  box-shadow: 0 2px 2px 0 #A9A9A9, 0 2px 1px -2px #A9A9A9, 0 1px 2px 0#A9A9A9;
+  border-radius: 2px;
 }
 .message-container:first-of-type {
   border-top-width: 0;
@@ -80,6 +105,9 @@ main, #messages-card {
   padding-top: 10px;
   opacity: 0;
   transition: opacity 1s ease-in-out;
+}
+.message-container:last-child {
+  margin-bottom: 15px;
 }
 .message-container.visible {
   opacity: 1;
@@ -110,100 +138,104 @@ main, #messages-card {
   font-size: 12px;
   box-sizing: border-box;
 }
-
+.message img {
+  max-width: 300px;
+  max-height: 200px;
+}
+#messages {
+  height: calc(100% - 80px);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+#message-filler {
+  flex-grow: 1;
+}
+#forms {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+#forms button {
+  border: none;
+  outline: none;
+  display: block;
+  border-radius: 2px;
+}
 #message-form {
   display: flex;
   flex-direction: row;
+  align-items: center;
+  width: 100%;
 }
-
+#message-form #message {
+  border: none;
+  outline: none;
+  background-color: none;
+  display: block;
+  width: 78%;
+  height: 50px;
+  padding: 0 10px;
+  box-shadow: 0 1px 1px 0 #A9A9A9, 0 1px 1px -1px #A9A9A9, 0 1px 1px 0#A9A9A9;
+}
+#message-form  #submit {
+  width: 100px;
+  height: 50px;
+  margin: 0 10px;
+  padding: 0;
+  border: none;
+  box-shadow: 0 1px 1px 0 #A9A9A9, 0 1px 1px -1px #A9A9A9, 0 1px 1px 0#A9A9A9;
+  background-color: #ffeb3b;
+  transition: 200ms ease all;
+}
+#message-form #submit:hover {
+  background-color: #F5D151;
+}
 #image-form {
   display: flex;
   flex-direction: row;
   width: 48px;
 }
-
-#message-form .mdl-textfield {
-  width: calc(100% - 100px);
-}
-#message-form button, #image-form button {
-  width: 100px;
-  margin: 15px 0 0 10px;
-}
-.mdl-card {
-  min-height: 0;
-}
-.mdl-card {
-  justify-content: space-between;
-}
-#user-container {
-  position: absolute;
-  display: flex;
-  flex-direction: row;
-  /* top: 22px; */
-  width: 100%;
-  right: 0;
-  padding-left: 10px;
-  justify-content: flex-end;
-  padding-right: 10px;
-}
-#user-container #user-pic {
-  top: -3px;
-  position: relative;
-  display: inline-block;
-  background-image: url('/images/profile_placeholder.png');
-  background-repeat: no-repeat;
-  width: 40px;
-  height: 40px;
-  background-size: 40px;
-  border-radius: 20px;
-}
-#user-container #user-name {
-  font-size: 16px;
-  line-height: 36px;
-  padding-right: 10px;
-  padding-left: 20px;
-}
 #image-form #submitImage {
   width: auto;
-  padding: 0 6px 0 1px;
   min-width: 0;
+  height: 50px;
+  width: 100%;
+  font-size: 1.5em;
+  color: white;
+  background-color: #b5b5b5;
+  box-shadow: 0 1px 1px 0 #A9A9A9, 0 1px 1px -1px #A9A9A9, 0 1px 1px 0#A9A9A9;
+  transition: 200ms ease all;
 }
-#image-form #submitImage .material-icons {
-  top: -1px;
-}
-.message img {
-  max-width: 300px;
-  max-height: 200px;
+#image-form #submitImage:hover {
+  background-color: #737373;
 }
 #mediaCapture {
   display: none;
 }
-@media screen and (max-width: 610px) {
+
+@media screen and (min-width: 700px) {
   header {
-    height: 113px;
-    padding-bottom: 80px !important;
+    display: flex;
+    justify-content: space-around;
   }
   #user-container {
-    /* top: 72px; */
-    /* background-color: rgb(3,155,229); */
-    height: 38px;
-    padding-top: 3px;
-    padding-right: 2px;
+    justify-content: flex-end;
+    width: 100%;
   }
   #user-container #user-pic {
-    top: 2px;
-    width: 33px;
-    height: 33px;
-    background-size: 33px;
+    width: 40px;
+    height: 40px;
+    background-size: 40px;
+  }
+  #messages-card {
+    top: 100px;
+    max-width: 40%;
   }
 }
-.mdl-textfield__label:after {
-  background-color: #0288D1;
-}
-.mdl-textfield--floating-label.is-focused .mdl-textfield__label {
-  color: #0288D1;
-}
-.mdl-button .material-icons {
-  top: -1px;
-  margin-right: 5px;
+@media screen and (min-width: 1500px) {
+  body {
+    background-size: 100%;
+    background-position: top;
+  }
 }

@@ -27,7 +27,6 @@ var userPicElement = document.getElementById('user-pic');
 var userNameElement = document.getElementById('user-name');
 var signInButtonElement = document.getElementById('sign-in');
 var signOutButtonElement = document.getElementById('sign-out');
-var signInSnackbarElement = document.getElementById('must-signin-snackbar');
 
 // Signs-in Friendly Chat.
 function signIn() {
@@ -43,16 +42,17 @@ function signOut() {
 //Initialize firebase.
 function initFirebase(){
   firebase.initializeApp( {
-    apiKey: "AIzaSyBsxbbR06BwQl__ch5IfVlnytHPdUKBkXg",
-    authDomain: "snap-2020-30b12.firebaseapp.com",
-    databaseURL: "https://snap-2020-30b12.firebaseio.com",
-    projectId: "snap-2020-30b12",
-    storageBucket: "snap-2020-30b12.appspot.com",
-    messagingSenderId: "303721417534",
-    appId: "1:303721417534:web:4b18332ded4e2f9fd8fa6f",
-    measurementId: "G-GSEWH9Q803"
+    apiKey: "AIzaSyB5hXXFnNZ3aIj498YGxHDimvSYuYIPgag",
+    authDomain: "snap-2020-13226.firebaseapp.com",
+    databaseURL: "https://snap-2020-13226.firebaseio.com",
+    projectId: "snap-2020-13226",
+    storageBucket: "snap-2020-13226.appspot.com",
+    messagingSenderId: "917013520624",
+    appId: "1:917013520624:web:1e90f308e5a327e1c8a235",
+    measurementId: "G-DP57F8DNZ1"
   });
 }
+
 // Initiate firebase auth.
 function initFirebaseAuth() {
   firebase.auth().onAuthStateChanged(authStateObserver);
@@ -87,23 +87,79 @@ function saveMessage(messageText) {
 
 // Loads chat messages history and listens for upcoming ones.
 function loadMessages() {
-  // TODO 8: Load and listens for new messages.
+  // Create the query to load the last 12 messages and listen for new ones.
+  var query = firebase.firestore()
+                  .collection('messages')
+                  .orderBy('timestamp', 'desc')
+                  .limit(12);
+  
+  // Start listening to the query.
+  query.onSnapshot(function(snapshot) {
+    snapshot.docChanges().forEach(function(change) {
+      if (change.type === 'removed') {
+        deleteMessage(change.doc.id);
+      } else {
+        var message = change.doc.data();
+        displayMessage(change.doc.id, message.timestamp, message.name,
+                       message.text, message.profilePicUrl, message.imageUrl);
+      }
+    });
+  });
 }
 
 // Saves a new message containing an image in Firebase.
 // This first saves the image in Firebase storage.
 function saveImageMessage(file) {
-  // TODO 9: Posts a new image as a message.
+  // 1 - We add a message with a loading icon that will get updated with the shared image.
+  firebase.firestore().collection('messages').add({
+    name: getUserName(),
+    imageUrl: LOADING_IMAGE_URL,
+    profilePicUrl: getProfilePicUrl(),
+    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+  }).then(function(messageRef) {
+    // 2 - Upload the image to Cloud Storage.
+    var filePath = firebase.auth().currentUser.uid + '/' + messageRef.id + '/' + file.name;
+    return firebase.storage().ref(filePath).put(file).then(function(fileSnapshot) {
+      // 3 - Generate a public URL for the file.
+      return fileSnapshot.ref.getDownloadURL().then((url) => {
+        // 4 - Update the chat message placeholder with the image's URL.
+        return messageRef.update({
+          imageUrl: url,
+          storageUri: fileSnapshot.metadata.fullPath
+        });
+      });
+    });
+  }).catch(function(error) {
+    console.error('There was an error uploading a file to Cloud Storage:', error);
+  });
 }
 
 // Saves the messaging device token to the datastore.
 function saveMessagingDeviceToken() {
-  // TODO 10: Save the device token in the realtime datastore
+  firebase.messaging().getToken().then(function(currentToken) {
+    if (currentToken) {
+      console.log('Got FCM device token:', currentToken);
+      // Saving the Device Token to the datastore.
+      firebase.firestore().collection('fcmTokens').doc(currentToken)
+          .set({uid: firebase.auth().currentUser.uid});
+    } else {
+      // Need to request permissions to show notifications.
+      requestNotificationsPermissions();
+    }
+  }).catch(function(error){
+    console.error('Unable to get messaging token.', error);
+  });
 }
 
-// Requests permissions to show notifications.
+// Requests permission to show notifications.
 function requestNotificationsPermissions() {
-  // TODO 11: Request permissions to send notifications.
+  console.log('Requesting notifications permission...');
+  firebase.messaging().requestPermission().then(function() {
+    // Notification permission granted.
+    saveMessagingDeviceToken();
+  }).catch(function(error) {
+    console.error('Unable to get permission to notify.', error);
+  });
 }
 
 // Triggered when a file is selected via the media picker.
@@ -114,15 +170,6 @@ function onMediaFileSelected(event) {
   // Clear the selection in the file picker input.
   imageFormElement.reset();
 
-  // Check if the file is an image.
-  if (!file.type.match('image.*')) {
-    var data = {
-      message: 'You can only share images',
-      timeout: 2000
-    };
-    signInSnackbarElement.MaterialSnackbar.showSnackbar(data);
-    return;
-  }
   // Check if the user is signed-in
   if (checkSignedInWithMessage()) {
     saveImageMessage(file);
@@ -136,7 +183,7 @@ function onMessageFormSubmit(e) {
   if (messageInputElement.value && checkSignedInWithMessage()) {
     saveMessage(messageInputElement.value).then(function() {
       // Clear message text field and re-enable the SEND button.
-      resetMaterialTextfield(messageInputElement);
+      resetTextField(messageInputElement);
       toggleButton();
     });
   }
@@ -167,6 +214,7 @@ function authStateObserver(user) {
     // Hide user's profile and sign-out button.
     userNameElement.setAttribute('hidden', 'true');
     userPicElement.setAttribute('hidden', 'true');
+    userPicElement.style.backgroundImage = "";
     signOutButtonElement.setAttribute('hidden', 'true');
 
     // Show sign-in button.
@@ -182,18 +230,14 @@ function checkSignedInWithMessage() {
   }
 
   // Display a message to the user using a Toast.
-  var data = {
-    message: 'You must sign-in first',
-    timeout: 2000
-  };
-  signInSnackbarElement.MaterialSnackbar.showSnackbar(data);
+  alert("You must sign in first.");
   return false;
 }
 
-// Resets the given MaterialTextField.
-function resetMaterialTextfield(element) {
+// Resets the given Text Field. --updated to clear text field without MDL
+function resetTextField(element) {
   element.value = '';
-  element.parentNode.MaterialTextfield.boundUpdateClassesHandler();
+  element.parentNode.boundUpdateClassesHandler();
 }
 
 // Template for messages.
